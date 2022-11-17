@@ -20,7 +20,7 @@ def build(name, tags=["latest"], args=[]):
               "from_secret": "docker_password"
             },
           "repo": "lib42/%s" % name,
-          "args": args,
+          "build_args": args,
           "context": name,
           "dockerfile": "%s/Containerfile" % name,
           "tags": tags,
