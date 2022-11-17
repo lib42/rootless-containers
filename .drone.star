@@ -2,7 +2,7 @@ images = [
     {
       "name": "deluge",
       "tags": [ "latest", "2.1.1" ],
-      "args": [ "DELUGE_VERSION=" ],
+      "args": [ ],
     },
   ]
 
