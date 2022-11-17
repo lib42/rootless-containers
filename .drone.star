@@ -9,19 +9,12 @@ images = [
 
 
 def main(ctx):
-  builds = []
-  for image in images:
-    builds.append(build(image["name"], image["tags"], image["args"]))
-  return builds
+  steps = []
 
-def build(name, tags=["latest"], args=[]):
-  return {
-    "kind": "pipeline",
-    "type": "kubernetes",
-    "name": "build-%s" % name,
-    "steps": [
+  for image in images:
+    steps.append(
       {
-        "name": "build",
+        "name": "build-%s" % image["name"],
         "image": "plugins/kaniko",
         "settings": {
           "username": {
@@ -30,19 +23,44 @@ def build(name, tags=["latest"], args=[]):
           "password": {
               "from_secret": "docker_password"
             },
-          "repo": "%s/%s" % (registry, name),
-          "build_args": args,
-          "context": name,
-          "dockerfile": "%s/Containerfile" % name,
-          "tags": tags,
+          "repo": "%s/%s" % (registry, image["name"]),
+          "build_args": image["args"],
+          "context": image["name"],
+          "dockerfile": "%s/Containerfile" % image["name"],
+          "tags": image["tags"],
          }
-      },
-      {
+      }
+    )
+
+    # Security Scan
+    steps.append(
+    {
         "name": "security-scan",
         "image": "aquasec/trivy:latest",
         "commands": [
-          "trivy image --no-progress --list-all-pkgs %s/%s:%s" % (registry, name, tags[0])
+          "trivy image -o /cache/trivy-%s.html --format template --template '@contrib/html.tpl' \
+          --no-progress --list-all-pkgs %s/%s:%s" \
+          % (image["name"], registry, image["name"], image["tags"][0])
+        ],
+        "depends_on": [ "build-%s" % image["name"]],
+        "volumes": [
+          {
+            "name": "cache",
+            "path": "/cache"
+          }
         ]
-        }
+      }
+    )
+
+  return {
+    "kind": "pipeline",
+    "type": "kubernetes",
+    "name": "build-%s" % image["name"],
+    "steps": steps,
+    "volumes": [
+      {
+        "name": "cache",
+        "temp": {}
+      }
     ]
   }
