@@ -18,7 +18,7 @@ steps:
       from_secret: docker_password
     repo: lib42/${IMAGE}
     context: ${IMAGE}
-    #dockerfile: Containerfile
+    dockerfile: ${IMAGE}/Containerfile
     #build_args:
     #- BASE_IMAGE=debian:bookworm-slim
     tags:
