@@ -21,7 +21,7 @@ def build(name, tag):
             },
           "repo": "lib42/%s" % name,
           "context": name,
-          "dockerfile": "Containerfile",
+          "dockerfile": "%s/Containerfile" % name,
           "tags": [ tag ],
          }
       }
