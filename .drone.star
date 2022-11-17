@@ -1,9 +1,9 @@
 def main(ctx):
   return [
-    build("deluge", ["latest", "2.1.1"], { "DELUGE_VERSION": "2.1.1" }),
+    build("deluge", ["latest", "2.1.1"], [ "DELUGE_VERSION=2.1.1" ]),
   ]
 
-def build(name, tags=["latest"], args={}):
+def build(name, tags=["latest"], args=[]):
   return {
     "kind": "pipeline",
     "type": "kubernetes",
