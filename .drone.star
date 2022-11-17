@@ -1,9 +1,9 @@
 def main(ctx):
   return [
-    build("deluge", "latest"),
+    build("deluge", ["latest", "2.1.1"], { "DELUGE_VERSION": "2.1.1" }),
   ]
 
-def build(name, tag):
+def build(name, tags=["latest"], args={}):
   return {
     "kind": "pipeline",
     "type": "kubernetes",
@@ -20,9 +20,10 @@ def build(name, tag):
               "from_secret": "docker_password"
             },
           "repo": "lib42/%s" % name,
+          "args": args,
           "context": name,
           "dockerfile": "%s/Containerfile" % name,
-          "tags": [ tag ],
+          "tags": tags,
          }
       }
     ]
