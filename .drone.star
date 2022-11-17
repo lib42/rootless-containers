@@ -12,15 +12,17 @@ def build(name, tag):
       {
         "name": "build",
         "image": "plugins/kaniko",
-        "username": {
-            "from_secret": "docker_username"
-          },
-        "password": {
-            "from_secret": "docker_password"
-          },
-        "repo": "lib42/%s" % name,
-        "context": name,
-        "tags": [ tag ]
+        "settings": {
+          "username": {
+              "from_secret": "docker_username"
+            },
+          "password": {
+              "from_secret": "docker_password"
+            },
+          "repo": "lib42/%s" % name,
+          "context": name,
+          "tags": [ tag ]
+         }
       }
     ]
   }
