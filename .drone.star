@@ -1,3 +1,4 @@
+registry = "docker.io/lib42"
 images = [
     {
       "name": "deluge",
@@ -29,7 +30,7 @@ def build(name, tags=["latest"], args=[]):
           "password": {
               "from_secret": "docker_password"
             },
-          "repo": "lib42/%s" % name,
+          "repo": "%s/%s" % (registry, name),
           "build_args": args,
           "context": name,
           "dockerfile": "%s/Containerfile" % name,
@@ -40,7 +41,7 @@ def build(name, tags=["latest"], args=[]):
         "name": "security-scan",
         "image": "aquasec/trivy:latest",
         "commands": [
-          "trivy image --no-progress --list-all-pkgs %s:%s" % (name, tags[0])
+          "trivy image --no-progress --list-all-pkgs %s/%s:%s" % (registry, name, tags[0])
         ]
         }
     ]
