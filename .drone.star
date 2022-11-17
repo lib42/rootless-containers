@@ -1,7 +1,17 @@
-def main(ctx):
-  return [
-    build("deluge", ["latest", "2.1.1"], [ "DELUGE_VERSION=2.1.1" ]),
+images = [
+    {
+      "name": "deluge",
+      "tags": [ "latest", "2.1.1" ],
+      "args": [ "DELUGE_VERSION=" ],
+    },
   ]
+
+
+def main(ctx):
+  builds = []
+  for image in images:
+    builds.append(build(image["name"], image["tags"], image["args"]))
+  return builds
 
 def build(name, tags=["latest"], args=[]):
   return {
@@ -25,6 +35,13 @@ def build(name, tags=["latest"], args=[]):
           "dockerfile": "%s/Containerfile" % name,
           "tags": tags,
          }
-      }
+      },
+      {
+        "name": "security-scan",
+        "image": "aquasec/trivy:latest",
+        "commands": [
+          "trivy image --no-progress --list-all-pkgs %s:%s" % (name, tags[0])
+        ]
+        }
     ]
   }
