@@ -28,6 +28,11 @@ def main(ctx):
           "context": image["name"],
           "dockerfile": "%s/Containerfile" % image["name"],
           "tags": image["tags"],
+         },
+         "when": {
+           "paths": [
+             image["name"]
+           ]
          }
       }
     )
@@ -38,7 +43,7 @@ def main(ctx):
         "name": "security-scan",
         "image": "aquasec/trivy:latest",
         "commands": [
-          "trivy image -o /cache/trivy-%s.html --format template --template '@contrib/html.tpl' \
+          "trivy image -o /cache/trivy-%s.html --format template --template '@/contrib/html.tpl' \
           --no-progress --list-all-pkgs %s/%s:%s" \
           % (image["name"], registry, image["name"], image["tags"][0])
         ],
@@ -48,7 +53,12 @@ def main(ctx):
             "name": "cache",
             "path": "/cache"
           }
-        ]
+        ],
+        "when": {
+          "paths": [
+            image["name"]
+          ]
+        }
       }
     )
 
@@ -61,6 +71,6 @@ def main(ctx):
       {
         "name": "cache",
         "temp": {}
-      }
-    ]
+      },
+    ],
   }
