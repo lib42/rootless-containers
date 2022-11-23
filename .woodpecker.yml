@@ -1,6 +1,8 @@
 ---
 matrix:
   include:
+  - IMAGE: debian
+    VERSION: latest
   - IMAGE: deluge
     VERSION: 2.1.1-r5
     ARGS: '[ "DELUGE_VERSION=2.1.1-r5", "ANOTHER=TEST" ]'
@@ -25,5 +27,6 @@ pipeline:
     image: "aquasec/trivy:latest"
     commands:
       - >
-        trivy image --no-progress --list-all-pkgs lib42/${IMAGE}:${VERSION}"
-        #-o /cache/trivy-%s.html --format template --template '@/contrib/html.tpl'
+        trivy image --no-progress --list-all-pkgs lib42/${IMAGE}:${VERSION}
+
+#-o /cache/trivy-%s.html --format template --template '@/contrib/html.tpl'
