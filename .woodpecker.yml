@@ -2,7 +2,8 @@
 matrix:
   include:
   - IMAGE: deluge
-    VERSION: 1.2.2
+    VERSION: 2.1.1-r5
+    ARGS: '[ "DELUGE_VERSION=2.1.1-r5", "ANOTHER=TEST" ]'
 
 pipeline:
   build:
@@ -10,6 +11,7 @@ pipeline:
     settings:
       repo: nold360/${IMAGE}
       dockerfile: ${IMAGE}/Containerfile
+      build_args: ${ARGS}
       context: ${IMAGE}
       tags:
         - latest
