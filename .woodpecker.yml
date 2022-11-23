@@ -20,3 +20,10 @@ pipeline:
         from_secret: docker_username
       password:
         from_secret: docker_password
+
+  scan:
+    image: "aquasec/trivy:latest"
+    commands:
+      - >
+        trivy image --no-progress --list-all-pkgs lib42/${IMAGE}:${VERSION}"
+        #-o /cache/trivy-%s.html --format template --template '@/contrib/html.tpl'
