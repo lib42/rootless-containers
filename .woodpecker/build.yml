@@ -1,23 +1,20 @@
 ---
 matrix:
   include:
-  - IMAGE: debian
-    VERSION: latest
   - IMAGE: deluge
-    VERSION: 2.1.1-r5
-    ARGS: '[ "DELUGE_VERSION=2.1.1-r5", "ANOTHER=TEST" ]'
+    TAGS: '[ "2.1.1-r6", "latest" ]'
+    ARGS: '[ "DELUGE_VERSION=2.1.1-r6" ]'
+
 
 pipeline:
   build:
     image: plugins/kaniko:1.6
     settings:
-      repo: nold360/${IMAGE}
+      repo: lib42/${IMAGE}
       dockerfile: ${IMAGE}/Containerfile
       build_args: ${ARGS}
       context: ${IMAGE}
-      tags:
-        - latest
-        - ${VERSION}
+      tags: ${TAGS}
       username:
         from_secret: docker_username
       password:
