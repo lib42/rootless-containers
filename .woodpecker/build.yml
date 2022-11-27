@@ -27,6 +27,6 @@ pipeline:
     image: "aquasec/trivy:latest"
     commands:
       - >
-        trivy image --no-progress --list-all-pkgs lib42/${IMAGE}:${VERSION}
+        trivy image -s HIGH,CRITICAL --ignore-unfixed --no-progress lib42/${IMAGE}:${VERSION}
 
 #-o /cache/trivy-%s.html --format template --template '@/contrib/html.tpl'
