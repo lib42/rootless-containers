@@ -4,6 +4,9 @@ matrix:
   - IMAGE: deluge
     TAGS: '[ "2.1.1-r6", "latest" ]'
     ARGS: '[ "DELUGE_VERSION=2.1.1-r6" ]'
+  - IMAGE: conreq
+    TAGS: '[ "latest" ]'
+    ARGS: '[]'
 
 
 pipeline:

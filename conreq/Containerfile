@@ -1,0 +1,12 @@
+FROM python:3-bullseye
+
+RUN git clone --depth=1 https://github.com/Archmonger/Conreq /app && \
+    pip3 install --no-cache-dir -r /app/requirements.txt && \
+    useradd -m -s /bin/bash user && \
+    chown -R user:user /app
+
+USER 1000
+WORKDIR /app
+VOLUME /config
+
+CMD ["python3", "manage.py", "run_conreq" ]
