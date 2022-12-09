@@ -1,72 +1,37 @@
-FROM alpine:edge
+ARG PY_VERSION=3.10
 
-ARG UNRAR_VERSION=6.1.7
-# set version label
-ARG DELUGE_VERSION
+FROM python:${PY_VERSION}-slim-bullseye as plugin-build
 
-# environment variables
-ENV PYTHON_EGG_CACHE="/config/plugins/.python-eggs"
+RUN apt-get update \
+    && apt-get install -y git \
+    && git clone --depth=1 -b 2.x https://github.com/ratanakvlun/deluge-ltconfig /ltconfig \
+    && cd /ltconfig \
+    && python setup.py bdist_egg
 
-# install software
-RUN \
-  echo "**** install build packages ****" && \
-  apk add --no-cache --upgrade --virtual=build-dependencies \
-    curl \
-    make \
-    g++ \
-    gcc \
-    geoip-dev \
-    python3-dev && \
-  echo "**** install packages ****" && \
-  apk add --no-cache \
-    geoip \
-    py3-pip \
-    python3 \
-    p7zip \
-    unzip && \
-  echo "**** install unrar from source ****" && \
-  mkdir /tmp/unrar && \
-  curl -o \
-    /tmp/unrar.tar.gz -L \
-    "https://www.rarlab.com/rar/unrarsrc-${UNRAR_VERSION}.tar.gz" && \
-  tar xf \
-    /tmp/unrar.tar.gz -C \
-    /tmp/unrar --strip-components=1 && \
-  cd /tmp/unrar && \
-  make && \
-  install -v -m755 unrar /usr/local/bin && \
-  if [ -z ${DELUGE_VERSION+x} ]; then \
-    DELUGE_VERSION=$(curl -sL "http://dl-cdn.alpinelinux.org/alpine/edge/community/x86_64/APKINDEX.tar.gz" | tar -xz -C /tmp \
-    && awk '/^P:deluge$/,/V:/' /tmp/APKINDEX | sed -n 2p | sed 's/^V://'); \
-  fi && \
-  apk add -U --upgrade --no-cache \
-    deluge==${DELUGE_VERSION} && \
-  echo "**** install python packages ****" && \
-  pip3 install --no-cache-dir -U \
-    pip && \
-  pip install --no-cache-dir --find-links https://wheel-index.linuxserver.io/alpine/ \
-    future \
-    GeoIP \
-    requests && \
-  echo "**** grab GeoIP database ****" && \
-  curl -o \
-    /usr/share/GeoIP/GeoIP.dat -L \
-    "https://ipfs.infura.io/ipfs/QmWTWcPRRbADZcLcJeANZmcJZNrcpmuQgKYBi6hGdddtC6" && \
-  echo "**** cleanup ****" && \
-  apk del --purge \
-    build-dependencies && \
-  rm -rf \
-    /root/.cache \
-    /tmp/*
 
+FROM python:${PY_VERSION}-slim-bullseye
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+      geoip-database \
+      unrar-free \
+    && apt-get dist-upgrade -y \
+    && pip3 install --no-cache-dir deluge libtorrent \
+    && useradd -m -u 1000 deluge \
+    && apt-get auto-remove -y \
+    && apt-get clean
+
+# FIXME: Variables can't be used here as it seems...
+COPY --from=plugin-build /ltconfig/dist/*.egg /usr/local/lib/python3.10/site-packages/deluge/plugins/
 COPY files/core.conf /defaults/core.conf
 
-# ports and volumes
+ENV PYTHON_EGG_CACHE=/home/deluge/.cache
+
 EXPOSE 8112 58846 58946 58946/udp
 VOLUME /config
 USER 1000
 
 # Deluge Daemon:
-CMD ["/usr/bin/python3", "/usr/bin/deluged", "-c", "/config", "-d"]
+CMD [ "/usr/local/bin/deluged", "-c", "/config", "-d"]
 ## Webserver:
-#CMD ["/usr/bin/python3", "/usr/bin/deluge-web", "-d", "-c", "/config"]
+#CMD [ "/usr/local/bin/deluge-web", "-d", "-c", "/config"]

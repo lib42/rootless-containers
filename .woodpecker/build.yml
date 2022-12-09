@@ -2,8 +2,8 @@
 matrix:
   include:
   - IMAGE: deluge
-    TAGS: '[ "2.1.1-r6", "latest" ]'
-    ARGS: '[ "DELUGE_VERSION=2.1.1-r6" ]'
+    TAGS: '[ "2.1.1", "latest" ]'
+    ARGS: '[]'
   - IMAGE: conreq
     TAGS: '[ "latest" ]'
     ARGS: '[]'
@@ -15,6 +15,7 @@ pipeline:
       repo: lib42/${IMAGE}
       dockerfile: ${IMAGE}/Containerfile
       build_args: ${ARGS}
+      expand_tag: true
       context: ${IMAGE}
       tags: ${TAGS}
       username:
