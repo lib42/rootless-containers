@@ -7,6 +7,9 @@ matrix:
   - IMAGE: conreq
     TAGS: '[ "latest" ]'
     ARGS: '[]'
+  - IMAGE: squid
+    TAGS: '[ "latest" ]'
+    ARGS: '[]'
 
 pipeline:
   build:
@@ -42,5 +45,3 @@ pipeline:
             - ${IMAGE}/
         branch: main
       - event: [ cron, manual ]
-
-#-o /cache/trivy-%s.html --format template --template '@/contrib/html.tpl'
