@@ -19,6 +19,11 @@ pipeline:
       dockerfile: ${IMAGE}/Containerfile
       build_args: ${ARGS}
       expand_tag: true
+      custom_labels:
+        - org.opencontainers.image.url=${CI_REPO_LINK}
+        - org.opencontainers.image.revision=${CI_COMMIT_SHA}
+        - org.opencontainers.image.vendor=lib42
+        - org.opencontainers.image.created=${CI_PIPELINE_CREATED}
       context: ${IMAGE}
       tags: ${TAGS}
       username:
