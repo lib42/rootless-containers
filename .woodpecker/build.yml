@@ -2,7 +2,7 @@
 matrix:
   include:
   - IMAGE: deluge
-    TAGS: '[ "2.1.1", "latest" ]'
+    TAGS: '[ "2", "latest" ]'
     ARGS: '[]'
   - IMAGE: conreq
     TAGS: '[ "latest" ]'
@@ -16,7 +16,7 @@ pipeline:
     image: plugins/kaniko:1.6
     settings:
       repo: lib42/${IMAGE}
-      dockerfile: ${IMAGE}/Containerfile
+      dockerfile: containers/${IMAGE}/Containerfile
       build_args: ${ARGS}
       expand_tag: true
       custom_labels:
@@ -24,7 +24,7 @@ pipeline:
         - org.opencontainers.image.revision=${CI_COMMIT_SHA}
         - org.opencontainers.image.vendor=lib42
         - org.opencontainers.image.created=${CI_PIPELINE_CREATED}
-      context: ${IMAGE}
+      context: containers/${IMAGE}
       tags: ${TAGS}
       username:
         from_secret: docker_username
@@ -34,7 +34,7 @@ pipeline:
       - path:
           include:
             - .woodpecker/*
-            - ${IMAGE}/
+            - containers/${IMAGE}/
         branch: main
       - event: [ cron, manual ]
 
@@ -47,6 +47,6 @@ pipeline:
       - path:
           include:
             - .woodpecker/*
-            - ${IMAGE}/
+            - containers/${IMAGE}/
         branch: main
       - event: [ cron, manual ]
