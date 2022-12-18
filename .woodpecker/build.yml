@@ -34,7 +34,7 @@ pipeline:
       - path:
           include:
             - .woodpecker/*
-            - containers/${IMAGE}/
+            - containers/${IMAGE}/**
         branch: main
       - event: [ cron, manual ]
 
@@ -47,6 +47,6 @@ pipeline:
       - path:
           include:
             - .woodpecker/*
-            - containers/${IMAGE}/
+            - containers/${IMAGE}/**
         branch: main
       - event: [ cron, manual ]
