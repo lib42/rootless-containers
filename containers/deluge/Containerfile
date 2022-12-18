@@ -26,6 +26,7 @@ COPY --from=plugin-build /ltconfig/dist/*.egg /usr/local/lib/python3.10/site-pac
 COPY files/core.conf /defaults/core.conf
 
 ENV PYTHON_EGG_CACHE=/home/deluge/.cache
+ENV SSL_CERT_DIR=/etc/ssl/certs
 
 EXPOSE 8112 58846 58946 58946/udp
 VOLUME /config
