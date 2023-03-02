@@ -1,4 +1,4 @@
-FROM lib42/base:bookwork-slim
+FROM lib42/base:bookworm-slim
 
 ARG TARGETPLATFORM="linux/amd64"
 ARG VERSION
@@ -18,10 +18,8 @@ RUN \
         'linux/arm64') export ARCH='ARM64' ;; \
     esac \
     && \
-    mkdir /app /config \
-    && \
     curl -fsSL "https://github.com/Jackett/Jackett/releases/download/v${VERSION}/Jackett.Binaries.Linux${ARCH}.tar.gz" \
-        | tar ixzf - -C /app --strip-components 1 \
+      | tar ixzf - -C /app --strip-components 1 \
     && \
     rm -rf \
         /app/JackettUpdater* \
@@ -33,6 +31,8 @@ RUN \
         /tmp/* \
         /var/lib/apt/lists/* \
         /var/tmp/ \
+    && \
+    mkdir /config \
     && chown -R app:app /app /config \
     && chmod -R 755 /app /config
 
@@ -40,4 +40,4 @@ USER app
 
 LABEL org.opencontainers.image.source="https://github.com/Jackett/Jackett"
 
-ENTRYPOINT [ "app/jackett", "--NoUpdates" ]
+ENTRYPOINT [ "/app/jackett", "--NoUpdates" ]
