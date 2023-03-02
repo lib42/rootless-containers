@@ -1,0 +1,14 @@
+FROM debian:bookworm-slim
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV UMASK=0022
+
+RUN apt-get update \
+    && apt-get -y dist-upgrade \
+    && apt-get install --no-install-recommends -y \
+      curl \
+      git \
+      ca-certificates \
+    && useradd -m -u 1420 -d /app app \
+    && apt-get auto-remove -y \
+    && apt-get clean
