@@ -3,25 +3,20 @@ matrix:
   include:
   - IMAGE: base
     VERSION: "bookworm-slim"
-    TAGS: '[ "latest", "${VERSION}" ]'
-    ARGS: '[]'
+    TAG: "latest"
   - IMAGE: deluge
-    VERSION: ""
-    TAGS: '[ "2", "latest" ]'
-    ARGS: '[]'
+    VERSION: "2"
+    TAG: "latest"
   - IMAGE: conreq
-    VERSION: ""
-    TAGS: '[ "latest" ]'
-    ARGS: '[]'
+    VERSION: "latest"
+    TAG: "latest"
   - IMAGE: squid
-    VERSION: ""
-    TAGS: '[ "latest" ]'
-    ARGS: '[]'
+    VERSION: "latest"
+    TAG: "latest"
   - IMAGE: jackett
     # renovate: datasource=github-releases depName=Jackett/Jackett versioning=loose
     VERSION: 0.20.3444
     TAGS: '[ "latest", "${VERSION}" ]'
-    ARGS: '[ "VERSION=${VERSION}" ]'
 
 when:
   path:
@@ -35,40 +30,28 @@ when:
 pipeline:
   build:
     image: plugins/kaniko:1.6
-    group: build
     settings:
       repo: lib42/${IMAGE}
       dockerfile: containers/${IMAGE}/Containerfile
-      build_args: ${ARGS}
-      expand_tag: true
+      build_args: 
+        - "VERSION=${VERSION}"
+      expand_tag: false
       custom_labels:
         - org.opencontainers.image.url=${CI_REPO_LINK}
         - org.opencontainers.image.revision=${CI_COMMIT_SHA}
         - org.opencontainers.image.vendor=lib42
         - org.opencontainers.image.created=${CI_PIPELINE_CREATED}
       context: containers/${IMAGE}
-      tags: ${TAGS}
+      tags: 
+        - ${TAG}
+        - ${VERSION}
       username:
         from_secret: docker_username
       password:
         from_secret: docker_password
-    when:
-    - path:
-      include:
-        - .woodpecker/*
-        - containers/${IMAGE}/**
-      branch: main
-      event: [ cron, manual, push, tag ]
 
   scan:
     image: "aquasec/trivy:latest"
     commands:
       - >
         trivy image -s HIGH,CRITICAL --ignore-unfixed --no-progress lib42/${IMAGE}:${VERSION}
-    when:
-      - path:
-          include:
-            - .woodpecker/*
-            - containers/${IMAGE}/**
-        branch: main
-        event: [ cron, manual, push, tag ]
