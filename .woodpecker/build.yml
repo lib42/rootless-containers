@@ -2,17 +2,25 @@
 matrix:
   include:
   - IMAGE: base
-    TAGS: '[ "latest", "bookworm-slim" ]'
+    VERSION: "bookworm-slim"
+    TAGS: '[ "latest", "${VERSION}" ]'
     ARGS: '[]'
   - IMAGE: deluge
     TAGS: '[ "2", "latest" ]'
+    VERSION: ""
     ARGS: '[]'
   - IMAGE: conreq
     TAGS: '[ "latest" ]'
+    VERSION: ""
     ARGS: '[]'
   - IMAGE: squid
     TAGS: '[ "latest" ]'
+    VERSION: ""
     ARGS: '[]'
+  - IMAGE: jackett
+    VERSION: "0.20.3436"
+    TAGS: '[ "latest", "${VERSION}" ]'
+    ARGS: '[ "VERSION="${VERSION}" ]'
 
 pipeline:
   build:
@@ -40,7 +48,7 @@ pipeline:
             - .woodpecker/*
             - containers/${IMAGE}/**
         branch: main
-      - event: [ cron, manual ]
+        event: [ cron, manual, push, tag ]
 
   scan:
     image: "aquasec/trivy:latest"
@@ -53,4 +61,4 @@ pipeline:
             - .woodpecker/*
             - containers/${IMAGE}/**
         branch: main
-      - event: [ cron, manual ]
+        event: [ cron, manual, push, tag ]

@@ -1,22 +1,24 @@
-FROM ghcr.io/onedr0p/ubuntu:jammy-20221101@sha256:bf2d52a2e698ab9c2e0a1af7f7b70b9806091c5ca21d9f1a4d1c3809f41e5e93
+FROM lib42/base:bookwork-slim
 
-ARG TARGETPLATFORM
+ARG TARGETPLATFORM="linux/amd64"
 ARG VERSION
-ARG CHANNEL
 
 ENV XDG_CONFIG_HOME=/config
+USER root
 
 # hadolint ignore=DL3008,DL3015,SC2039,SC2086
 RUN \
     apt-get -qq update \
     && \
     apt-get -qq install -y \
-        libicu70 \
+        libicu72 \
     && \
     case "${TARGETPLATFORM}" in \
         'linux/amd64') export ARCH='AMDx64' ;; \
         'linux/arm64') export ARCH='ARM64' ;; \
     esac \
+    && \
+    mkdir /app /config \
     && \
     curl -fsSL "https://github.com/Jackett/Jackett/releases/download/v${VERSION}/Jackett.Binaries.Linux${ARCH}.tar.gz" \
         | tar ixzf - -C /app --strip-components 1 \
@@ -31,12 +33,11 @@ RUN \
         /tmp/* \
         /var/lib/apt/lists/* \
         /var/tmp/ \
-    && chown -R root:root /app \
-    && chmod -R 755 /app \
-    && printf "umask %d" "${UMASK}" >> /etc/bash.bashrc
+    && chown -R app:app /app /config \
+    && chmod -R 755 /app /config
 
-USER kah
-COPY ./apps/jackett/entrypoint.sh /entrypoint.sh
-CMD ["/entrypoint.sh"]
+USER app
 
 LABEL org.opencontainers.image.source="https://github.com/Jackett/Jackett"
+
+ENTRYPOINT [ "app/jackett", "--NoUpdates" ]
