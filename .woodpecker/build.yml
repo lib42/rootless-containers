@@ -22,6 +22,15 @@ matrix:
     TAGS: '[ "latest", "${VERSION}" ]'
     ARGS: '[ "VERSION="${VERSION}" ]'
 
+when:
+  path:
+    include:
+      - .woodpecker/*
+      - containers/${IMAGE}/**
+  branch: main
+  event: [ cron, manual, push, tag ]
+
+
 pipeline:
   build:
     image: plugins/kaniko:1.6
@@ -42,23 +51,8 @@ pipeline:
         from_secret: docker_username
       password:
         from_secret: docker_password
-    when:
-      - path:
-          include:
-            - .woodpecker/*
-            - containers/${IMAGE}/**
-        branch: main
-        event: [ cron, manual, push, tag ]
-
-  scan:
+   scan:
     image: "aquasec/trivy:latest"
     commands:
       - >
         trivy image -s HIGH,CRITICAL --ignore-unfixed --no-progress lib42/${IMAGE}:${VERSION}
-    when:
-      - path:
-          include:
-            - .woodpecker/*
-            - containers/${IMAGE}/**
-        branch: main
-        event: [ cron, manual, push, tag ]
