@@ -1,6 +1,9 @@
 ---
 matrix:
   include:
+  - IMAGE: base
+    TAGS: '[ "latest", "bookworm-slim" ]'
+    ARGS: '[]'
   - IMAGE: deluge
     TAGS: '[ "2", "latest" ]'
     ARGS: '[]'
@@ -14,6 +17,7 @@ matrix:
 pipeline:
   build:
     image: plugins/kaniko:1.6
+    group: build
     settings:
       repo: lib42/${IMAGE}
       dockerfile: containers/${IMAGE}/Containerfile
