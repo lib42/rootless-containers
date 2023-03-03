@@ -5,7 +5,8 @@ matrix:
     VERSION: "bookworm-slim"
     TAG: "latest"
   - IMAGE: deluge
-    VERSION: "2"
+    # renovate: datasource=pip depName=deluge
+    VERSION: 2.1.1
     TAG: "latest"
   - IMAGE: conreq
     VERSION: "latest"
