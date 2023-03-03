@@ -16,7 +16,7 @@ matrix:
   - IMAGE: jackett
     # renovate: datasource=github-releases depName=Jackett/Jackett versioning=loose
     VERSION: 0.20.3444
-    TAGS: '[ "latest", "${VERSION}" ]'
+    TAG: "latest"
 
 when:
   path:
