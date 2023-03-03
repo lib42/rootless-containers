@@ -10,13 +10,13 @@ RUN apt-get update \
 
 
 FROM python:${PY_VERSION}-slim-bullseye
+ARG VERSION
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
       geoip-database \
-      unrar-free \
     && apt-get dist-upgrade -y \
-    && pip3 install --no-cache-dir deluge libtorrent \
+    && pip3 install --no-cache-dir "deluge==${VERSION}" libtorrent \
     && useradd -m -u 1000 deluge \
     && apt-get auto-remove -y \
     && apt-get clean
