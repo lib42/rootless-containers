@@ -15,7 +15,7 @@
   {
     "fileMatch": [".woodpecker/build.yml$"],
     "matchStrings": [
-      "datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?.*VERSION:.?(?<currentValue>.*)\\s"
+      "datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s.*VERSION: ?(?<version>.*?)\\s"
     ],
     "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
   }
