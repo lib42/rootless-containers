@@ -18,8 +18,8 @@ matrix:
     TAGS: '[ "latest" ]'
     ARGS: '[]'
   - IMAGE: jackett
-    # renovate: datasource=github-releases depName=Jackett/Jackett
-    VERSION: "0.20.3436"
+    # renovate: datasource=github-releases depName=Jackett/Jackett versioning=loose
+    VERSION: 0.20.3436
     TAGS: '[ "latest", "${VERSION}" ]'
     ARGS: '[ "VERSION=${VERSION}" ]'
 
