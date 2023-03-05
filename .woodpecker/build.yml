@@ -30,7 +30,7 @@ when:
 
 pipeline:
   build:
-    image: plugins/kaniko:1.6
+    image: plugins/kaniko:1.7
     settings:
       repo: lib42/${IMAGE}
       dockerfile: containers/${IMAGE}/Containerfile
