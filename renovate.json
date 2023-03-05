@@ -26,7 +26,7 @@
   ],
   "packageRules": [
     {
-      "matchPackageNames": ["jackett/jackett"],
+      "matchPackageNames": ["jackett/jackett", "jackett", "Jackett/Jackett"],
       "matchUpdateTypes": ["patch"],
       "automerge": true
     }
