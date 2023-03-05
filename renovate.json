@@ -24,7 +24,6 @@
   ],
   "packageRules": [
     {
-      "matchDebTypes": ["docker"],
       "matchPackageNames": ["Jackett/Jackett"],
       "matchUpdateTypes": ["patch"],
       "automerge": true
