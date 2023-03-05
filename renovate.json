@@ -21,5 +21,13 @@
     "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}",
     "extractVersionTemplate": "^v?(?<version>[\\d\\.]+)"
   }
+  ],
+  "packageRules": [
+    {
+      "matchDebTypes": ["docker"],
+      "matchPackageNames": ["Jackett/Jackett"],
+      "matchUpdateTypes": ["patch"],
+      "automerge": true
+    }
   ]
 }
