@@ -3,6 +3,8 @@
   "extends": [
     "config:base"
   ],
+  "separateMinorPatch": true,
+  "assignees": [ "nold360" ],
   
   "regexManagers": [
   {
